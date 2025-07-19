@@ -54,6 +54,7 @@ app.use('/api/map', mapRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/maps', mapsRoutes);
 app.use('/api/payments', paymentsRoutes);
+app.use('/api/tariff', require('./routes/tariff'));
 
 // Сделать io доступным в маршрутах
 app.set('io', io);
