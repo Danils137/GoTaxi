@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoTaxi Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature h3 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .api-test {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .api-result {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚗 GoTaxi</h1>
+        <p class="subtitle">Система такси с чатом между клиентами</p>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>💬 Чат клиентов</h3>
+                <p>Уникальная функция общения между пассажирами</p>
+            </div>
+            <div class="feature">
+                <h3>🚗 Заказ такси</h3>
+                <p>Быстрый заказ и отслеживание поездок</p>
+            </div>
+            <div class="feature">
+                <h3>🗺️ Карты</h3>
+                <p>Интеграция с Google Maps</p>
+            </div>
+            <div class="feature">
+                <h3>💰 Прямые платежи</h3>
+                <p>Оплата напрямую водителю</p>
+            </div>
+        </div>
+        
+        <div class="status">
+            <h3>✅ Статус системы</h3>
+            <p><strong>SERVER:</strong> <span id="server-status">Проверка...</span></p>
+            <p><strong>CLIENT:</strong> <span id="client-status">Готов к демонстрации</span></p>
+            <p><strong>База данных:</strong> Mock данные (MongoDB не требуется)</p>
+        </div>
+        
+        <div class="buttons">
+            <a href="https://5000-iwbdsistdexu9zixhz9co-d8301e10.manusvm.computer" 
+               class="btn btn-primary" target="_blank">
+                🌐 Открыть API Server
+            </a>
+            <button class="btn btn-secondary" onclick="testAPI()">
+                🧪 Тест API
+            </button>
+        </div>
+        
+        <div class="api-test">
+            <h3>🔧 Тестирование API</h3>
+            <button onclick="testAuth()" class="btn btn-secondary" style="margin: 5px;">Тест авторизации</button>
+            <button onclick="testChat()" class="btn btn-secondary" style="margin: 5px;">Тест чата</button>
+            <button onclick="testRide()" class="btn btn-secondary" style="margin: 5px;">Тест поездки</button>
+            <div id="api-result" class="api-result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://5000-iwbdsistdexu9zixhz9co-d8301e10.manusvm.computer';
+        
+        // Проверка статуса сервера
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                document.getElementById('server-status').textContent = '✅ Работает';
+                document.getElementById('server-status').style.color = '#00ff00';
+            } catch (error) {
+                document.getElementById('server-status').textContent = '❌ Недоступен';
+                document.getElementById('server-status').style.color = '#ff0000';
+            }
+        }
+        
+        // Тест API
+        async function testAPI() {
+            const result = document.getElementById('api-result');
+            result.textContent = 'Тестирование API...';
+            
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                result.textContent = 'Ошибка: ' + error.message;
+            }
+        }
+        
+        // Тест авторизации
+        async function testAuth() {
+            const result = document.getElementById('api-result');
+            result.textContent = 'Тестирование авторизации...';
+            
+            try {
+                const response = await fetch(API_URL + '/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'ivan@example.com',
+                        password: 'demo123'
+                    })
+                });
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                result.textContent = 'Ошибка авторизации: ' + error.message;
+            }
+        }
+        
+        // Тест чата
+        async function testChat() {
+            const result = document.getElementById('api-result');
+            result.textContent = 'Тестирование чата...';
+            
+            try {
+                const response = await fetch(API_URL + '/api/chat');
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                result.textContent = 'Ошибка чата: ' + error.message;
+            }
+        }
+        
+        // Тест поездки
+        async function testRide() {
+            const result = document.getElementById('api-result');
+            result.textContent = 'Тестирование заказа поездки...';
+            
+            try {
+                const response = await fetch(API_URL + '/api/ride/estimate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        origin: 'Москва, Красная площадь',
+                        destination: 'Москва, Арбат'
+                    })
+                });
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                result.textContent = 'Ошибка заказа: ' + error.message;
+            }
+        }
+        
+        // Проверка при загрузке
+        checkServerStatus();
+    </script>
+</body>
+</html>
+
