@@ -487,6 +487,7 @@ CountrySchema.statics.seedCountries = async function() {
       currency: { code: 'PLN', symbol: 'zł', name: 'Polish Złoty' },
       languages: [
         { code: 'pl', name: 'Polish', isDefault: true },
+        { code: 'ru', name: 'Russian', isDefault: false },
         { code: 'en', name: 'English', isDefault: false }
       ],
       timezone: 'Europe/Warsaw',
@@ -500,6 +501,7 @@ CountrySchema.statics.seedCountries = async function() {
       currency: { code: 'EUR', symbol: '€', name: 'Euro' },
       languages: [
         { code: 'de', name: 'German', isDefault: true },
+        { code: 'ru', name: 'Russian', isDefault: false },
         { code: 'en', name: 'English', isDefault: false }
       ],
       timezone: 'Europe/Berlin',
